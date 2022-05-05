@@ -18,6 +18,8 @@ def fillData():
     data = response_API.text
     pictures_nasa = json.loads(data)
 
+    #If field is supplied, we assign by it
+
     #Go through recieved data and assign it
     for pic in pictures_nasa: 
       pictures.append(pic)
@@ -37,6 +39,31 @@ def ping():
 @app.route('/products/<string:product_name>')
 def getProduct(product_name):
     print(type(products[0]))
+    productsFound = [
+        product for product in products if product['name'] == product_name.lower()]
+    if (len(productsFound) > 0):
+        return jsonify({'product': productsFound[0]})
+    return jsonify({'message': 'Product Not found'})
+
+@app.route('/productos/<string:product_name>')
+def getProductos(product_name):
+    print(type(products[0]))
+    print(products)
+    
+    names = []
+    fecha = "2021-05-01"
+    dict = {}
+    if product_name == "name":
+     for each in products:
+        print(each['name'])
+        dict = {"fecha":fecha,"producto":each['name']}
+        names.append(dict)
+    print("se imprime names")
+
+    print(names)
+    return jsonify(names)
+    #jsonStr = json.dumps(names)
+
     productsFound = [
         product for product in products if product['name'] == product_name.lower()]
     if (len(productsFound) > 0):
@@ -89,6 +116,9 @@ def search():
           filtered_pictures.append(each)
           print(filtered_pictures)
       pictures = filtered_pictures 
+
+    #If entry point is supplied we filter
+    #entry(field)
 
     if end>=count: #last page
       if page_num > 1:
