@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 from images import pictures
 
+#Fills local data with NASA API
 def fillDataField(field):
     global pictures
     pictures.clear()
@@ -18,7 +19,6 @@ def fillDataField(field):
 
     #If field is supplied, we assign by it
     dict = {}
-    print(field)
     if field == "url":
      for each in pictures_nasa:
         dict = {"date":each['date'],"url":each['url']}
@@ -36,13 +36,12 @@ def fillDataField(field):
         dict = {"date":each['date'],"title":each['title']}
         pictures.append(dict)
     elif field == "general":
-    #Go through recieved data and assign it
       for pic in pictures_nasa: 
        pictures.append(pic)
     
     return jsonify({'response': 'Response successful'})
 
-# Index route
+#Index route
 @app.route('/', methods=['GET'])
 def ping():
     return jsonify({'General Info': 'http://127.0.0.1:4000/pictures/general'
@@ -52,6 +51,7 @@ def ping():
     ,'url': 'http://127.0.0.1:4000/pictures/url'
     })
 
+#Pictures routes  
 @app.route('/pictures/<string:field>', methods=['GET'])
 def searchField(field):
     global pictures
@@ -63,21 +63,14 @@ def searchField(field):
     #Load data
     fillDataField(field)
 
-    #Paginate
-    #paginateData()
-
     #If date is supplied we generate a filtered list   
     start = (page_num - 1) * page_size
     end = start + page_size
     count = len(pictures)
     filtered_pictures = []
     
-    print("La fecha proporcionada es")
-    print(date_supplied)
-
     if date_supplied != None:
       for each in pictures:
-      #print(each['copyright'])
        if each['date'] == date_supplied:
           print("FOUND DATE")
           filtered_pictures.append(each)
@@ -85,8 +78,6 @@ def searchField(field):
       pictures = filtered_pictures 
 
     #If entry point is supplied we filter
-    #entry(field)
-
     if end>=count: #last page
       if page_num > 1:
         prev = f"/pictures?page_num={page_num-1}&page_size={page_size}" 
@@ -94,11 +85,11 @@ def searchField(field):
         prev = 'None'   
       next = 'None'
     else: #not last page
-       if page_num > 1:
-         prev = f"/pictures?page_num={page_num-1}&page_size={page_size}" 
-       else: #first page
-         prev = 'None'  
-       next = f"/pictures?page_num={page_num+1}&page_size={page_size}" 
+      if page_num > 1:
+        prev = f"/pictures?page_num={page_num-1}&page_size={page_size}" 
+      else: #first page
+        prev = 'None'  
+      next = f"/pictures?page_num={page_num+1}&page_size={page_size}" 
     
     general_Info = {'count':count, 'page_num':page_num, 'page_size':page_size, 'next': next, 'prev': prev}
 
