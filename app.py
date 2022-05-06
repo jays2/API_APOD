@@ -20,7 +20,7 @@ def fillDataField(field):
     #If field is supplied, we assign by it
     dict = {}
     if field == "url":
-     for each in pictures_nasa:
+      for each in pictures_nasa:
         dict = {"date":each['date'],"url":each['url']}
         pictures.append(dict)
     elif field == "hdurl":
@@ -37,7 +37,7 @@ def fillDataField(field):
         pictures.append(dict)
     elif field == "general":
       for pic in pictures_nasa: 
-       pictures.append(pic)
+        pictures.append(pic)
     
     return jsonify({'response': 'Response successful'})
 
@@ -71,11 +71,9 @@ def searchField(field):
     
     if date_supplied != None:
       for each in pictures:
-       if each['date'] == date_supplied:
-          print("FOUND DATE")
+        if each['date'] == date_supplied:
           filtered_pictures.append(each)
-          print(filtered_pictures)
-      pictures = filtered_pictures 
+        pictures = filtered_pictures 
 
     #If entry point is supplied we filter
     if end>=count: #last page
