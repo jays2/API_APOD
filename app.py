@@ -12,7 +12,7 @@ from images import pictures
 def fillDataField(field):
     global pictures
     pictures.clear()
-    response_API = requests.get('https://api.nasa.gov/planetary/apod?api_key=5D28BHJaqlW7u9okOxk1bFAu6CAhOGPT3629bpBH&start_date=2022-04-30')
+    response_API = requests.get('https://api.nasa.gov/planetary/apod?api_key=5D28BHJaqlW7u9okOxk1bFAu6CAhOGPT3629bpBH&start_date=2022-04-29')
     #Link should be: https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=100
     data = response_API.text
     pictures_nasa = json.loads(data)
@@ -78,16 +78,16 @@ def searchField(field):
     #If entry point is supplied we filter
     if end>=count: #last page
       if page_num > 1:
-        prev = f"/pictures?page_num={page_num-1}&page_size={page_size}" 
+        prev = f"/pictures/{field}?page_num={page_num-1}&page_size={page_size}" 
       else: #first page
         prev = 'None'   
       next = 'None'
     else: #not last page
       if page_num > 1:
-        prev = f"/pictures?page_num={page_num-1}&page_size={page_size}" 
+        prev = f"/pictures/{field}?page_num={page_num-1}&page_size={page_size}" 
       else: #first page
         prev = 'None'  
-      next = f"/pictures?page_num={page_num+1}&page_size={page_size}" 
+      next = f"/pictures/{field}?page_num={page_num+1}&page_size={page_size}" 
     
     general_Info = {'count':count, 'page_num':page_num, 'page_size':page_size, 'next': next, 'prev': prev}
 
