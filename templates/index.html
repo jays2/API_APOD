@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Home page</title>
+    </head>
+    <body>
+        <h1>Last 100 pictures of the day from NASA</h1>    
+        
+        {% for each in content[1]['pictures'] %}
+        <p>{{each['title']}}</p> <p>{{each['date']}}</p>
+        <img src="{{each['url']}}" alt="alternatetext"> <br>
+        {% endfor %}
+       
+        
+        {% if content[0]['info']['next_page'] != 0 %}
+            <a href="/apod/{{content[0]['info']['next_page']}}">Next<br></a>
+        {% else %}
+            <a href="">Next<br></a>
+        {% endif %}
+
+        {% if content[0]['info']['prev_page'] != 0 %}
+            <a href="/apod/{{content[0]['info']['prev_page']}}">Previous<br></a>
+        {% else %}
+            <a href="">Previous<br></a>
+        {% endif %}
+
+    </body>
+</html>
