@@ -6,11 +6,9 @@ import json
 
 app = Flask(__name__)
 
-from images import products
 from images import pictures
 
-
-def fillData():
+def fillDataField(field):
     global pictures
     pictures.clear()
     response_API = requests.get('https://api.nasa.gov/planetary/apod?api_key=5D28BHJaqlW7u9okOxk1bFAu6CAhOGPT3629bpBH&start_date=2022-04-30')
@@ -19,80 +17,43 @@ def fillData():
     pictures_nasa = json.loads(data)
 
     #If field is supplied, we assign by it
-
+    dict = {}
+    print(field)
+    if field == "url":
+     for each in pictures_nasa:
+        dict = {"date":each['date'],"url":each['url']}
+        pictures.append(dict)
+    elif field == "hdurl":
+      for each in pictures_nasa:
+        dict = {"date":each['date'],"hdurl":each['hdurl']}
+        pictures.append(dict)
+    elif field == "explanation":
+      for each in pictures_nasa:
+        dict = {"date":each['date'],"explanation":each['explanation']}
+        pictures.append(dict)
+    elif field == "title":
+      for each in pictures_nasa:
+        dict = {"date":each['date'],"title":each['title']}
+        pictures.append(dict)
+    elif field == "general":
     #Go through recieved data and assign it
-    for pic in pictures_nasa: 
-      pictures.append(pic)
+      for pic in pictures_nasa: 
+       pictures.append(pic)
     
-    return jsonify({'response': 'Populated!'})
+    return jsonify({'response': 'Response successful'})
 
-# Testing Route
+# Index route
 @app.route('/', methods=['GET'])
 def ping():
-    return jsonify({'General Info': 'http://127.0.0.1:4000/pictures'
+    return jsonify({'General Info': 'http://127.0.0.1:4000/pictures/general'
     ,'explanation': 'http://127.0.0.1:4000/pictures/explanation'
     ,'hdurl': 'http://127.0.0.1:4000/pictures/hdurl'
     ,'title': 'http://127.0.0.1:4000/pictures/title'
     ,'url': 'http://127.0.0.1:4000/pictures/url'
     })
 
-@app.route('/products/<string:product_name>')
-def getProduct(product_name):
-    print(type(products[0]))
-    productsFound = [
-        product for product in products if product['name'] == product_name.lower()]
-    if (len(productsFound) > 0):
-        return jsonify({'product': productsFound[0]})
-    return jsonify({'message': 'Product Not found'})
-
-@app.route('/productos/<string:product_name>')
-def getProductos(product_name):
-    print(type(products[0]))
-    print(products)
-    
-    names = []
-    fecha = "2021-05-01"
-    dict = {}
-    if product_name == "name":
-     for each in products:
-        print(each['name'])
-        dict = {"fecha":fecha,"producto":each['name']}
-        names.append(dict)
-    print("se imprime names")
-
-    print(names)
-    return jsonify(names)
-    #jsonStr = json.dumps(names)
-
-    productsFound = [
-        product for product in products if product['name'] == product_name.lower()]
-    if (len(productsFound) > 0):
-        return jsonify({'product': productsFound[0]})
-    return jsonify({'message': 'Product Not found'})
-
-# Get Data Routes
-@app.route('/products')
-def getProducts():
-    # return jsonify(products)
-    return jsonify({'products': products})
-
-# Populate data
-@app.route('/fill')
-def getData():
-    response_API = requests.get('https://api.nasa.gov/planetary/apod?api_key=5D28BHJaqlW7u9okOxk1bFAu6CAhOGPT3629bpBH&start_date=2022-05-01')
-    #Link simplified: https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&start_date=2022-05-01
-    #Link should be: https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=100
-    data = response_API.text
-    pictures_nasa = json.loads(data)
-
-    #Go through recieved data and assign it
-    for pic in pictures_nasa: 
-      pictures.append(pic)
-    
-    return jsonify({'response': 'Populated!'})
-
-@app.route('/pictures', methods=['GET'])
-def search():
+@app.route('/pictures/<string:field>', methods=['GET'])
+def searchField(field):
     global pictures
     args = request.args
     page_num = args.get('page_num',default=1, type=int)
@@ -100,7 +61,10 @@ def search():
     date_supplied = args.get('date',type=str)
 
     #Load data
-    fillData()
+    fillDataField(field)
+
+    #Paginate
+    #paginateData()
 
     #If date is supplied we generate a filtered list   
     start = (page_num - 1) * page_size
@@ -108,6 +72,9 @@ def search():
     count = len(pictures)
     filtered_pictures = []
     
+    print("La fecha proporcionada es")
+    print(date_supplied)
+
     if date_supplied != None:
       for each in pictures:
       #print(each['copyright'])
@@ -136,18 +103,6 @@ def search():
     general_Info = {'count':count, 'page_num':page_num, 'page_size':page_size, 'next': next, 'prev': prev}
 
     return jsonify({'info':general_Info},{'pictures': pictures[start:end]})
-
-@app.route('/date', methods=['GET'])
-def getDate():
-    args = request.args
-    date_supplied = args.get('prm', type=str)
-    fecha = '2020-01-01' 
-    print("--")
-    print(date_supplied)
-    found = 'False'
-    if date_supplied != None:
-      found = 'True'
-    return (found)
 
 
 if __name__ == '__main__':
