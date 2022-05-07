@@ -23,7 +23,7 @@ def fillDataField(field):
     global pictures
     pictures.clear()
     today = date.today().isoformat()
-    sub_today = str(date.today() - timedelta(days=16))
+    sub_today = str(date.today() - timedelta(days=99))
     response_API = requests.get(f'https://api.nasa.gov/planetary/apod?api_key=5D28BHJaqlW7u9okOxk1bFAu6CAhOGPT3629bpBH&start_date={sub_today}&end_date={today}')
     data = response_API.text
     pictures_nasa = json.loads(data)
