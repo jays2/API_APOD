@@ -4,14 +4,19 @@
         <title>Home page</title>
     </head>
     <body>
-        <h1>Last 100 pictures of the day from NASA</h1>    
+        <h1>Last 100 pictures of the day</h1>    
         
+        <form action="/apod/look">
+            <label for="fdate">Date(YYYY-MM-DD):</label><br>
+            <input type="text" id="fdate" name="fdate" value=""><br>
+            <input type="submit" value="Submit">
+        </form> 
+
         {% for each in content[1]['pictures'] %}
         <p>{{each['title']}}</p> <p>{{each['date']}}</p>
-        <img src="{{each['url']}}" alt="alternatetext"> <br>
+        <img src="{{each['url']}}" alt="alternatetext" style="width:350px;height:350px;"> <br>
         {% endfor %}
        
-        
         {% if content[0]['info']['next_page'] != 0 %}
             <a href="/apod/{{content[0]['info']['next_page']}}">Next<br></a>
         {% else %}

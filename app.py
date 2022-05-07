@@ -43,7 +43,7 @@ def fillDataField(field):
     global pictures
     pictures.clear()
     today = date.today().isoformat()
-    sub_today = str(date.today() - timedelta(days=36))
+    sub_today = str(date.today() - timedelta(days=15))
     response_API = requests.get(f'https://api.nasa.gov/planetary/apod?api_key=5D28BHJaqlW7u9okOxk1bFAu6CAhOGPT3629bpBH&start_date={sub_today}&end_date={today}')
     #Link should be: https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=100
     data = response_API.text
@@ -84,9 +84,9 @@ def searchField(field):
     page_size = args.get('page_size',default=10, type=int)
     date_supplied = args.get('date',type=str)
 
-    if len(pictures) < 1 :
-      fillDataField(field)
     
+    fillDataField(field)
+  
     #If date is supplied we generate a filtered list   
     start = (page_num - 1) * page_size
     end = start + page_size
@@ -94,11 +94,18 @@ def searchField(field):
     filtered_pictures = []
    
     
+    print("ASI VIENE EN API")
+    print(date_supplied)
+  
+
     if date_supplied != None:
+      print("ENTRO AL NONEE")
       for each in pictures:
         if each['date'] == date_supplied:
           filtered_pictures.append(each)
         pictures = filtered_pictures 
+
+    count = len(pictures)
 
     #Defining header
     if end>=count: #last page
@@ -127,6 +134,9 @@ def searchField(field):
 @app.route('/apod/<string:page_num>', methods=['GET'])
 def paginate(page_num):
     #fillDataField("general")
+
+    #if date is supplied we look by it
+
     print(type(pictures))
     response_APOC = requests.get(f'http://127.0.0.1:4000/pictures/general?page_num={page_num}') #probar
     #traer desde index, page num y asignarlo en el request, validar si este es vacio, 
@@ -151,6 +161,52 @@ def paginate(page_num):
     ,'url': 'http://127.0.0.1:4000/pictures/url'
     })
 
+
+#Look for a specific date
+@app.route('/apod/look', methods=['GET'])
+def look():
+    #fillDataField("general")
+
+    #if date is supplied we look by it
+    args = request.args
+    date_supplied = args.get('fdate',type=str)
+
+    print("FECHA VACIA DESDE EL FORM")
+    print(date_supplied)
+    if date_supplied == None:
+      print("Viene como NONE")
+    
+    if date_supplied == "":
+      response_APOC = requests.get(f'http://127.0.0.1:4000/pictures/general')  
+    else:
+      response_APOC = requests.get(f'http://127.0.0.1:4000/pictures/general?date={date_supplied}') 
+
+    print(type(pictures))
+    
+    #traer desde index, page num y asignarlo en el request, validar si este es vacio, 
+    #o si viene con algo hacer con un boton summit get a esta ruta
+    data_response = response_APOC.text
+    pictures_content = json.loads(data_response)
+    print(type(pictures_content))
+    print(type(pictures_content[1]['pictures']))
+   
+
+    for each in pictures_content[1]['pictures']:
+      print(each['title'])
+  
+    print(pictures_content[0]['info']['prev'])
+
+
+    print("HUBO REQUEST")
+
+    return render_template("index.html", content = pictures_content) 
+    
+    return jsonify({'General Info': 'http://127.0.0.1:4000/pictures/general'
+    ,'explanation': 'http://127.0.0.1:4000/pictures/explanation'
+    ,'hdurl': 'http://127.0.0.1:4000/pictures/hdurl'
+    ,'title': 'http://127.0.0.1:4000/pictures/title'
+    ,'url': 'http://127.0.0.1:4000/pictures/url'
+    })
 
 if __name__ == '__main__':
     app.run(debug=True, port=4000)
