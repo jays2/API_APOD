@@ -13,7 +13,7 @@ from images import pictures
 #Index route
 @app.route('/', methods=['GET'])
 def home():
-    response_APOC = requests.get('http://127.0.0.1:4000/pictures/general')  
+    response_APOC = requests.get('https://apod07nasa.herokuapp.com/pictures/general')  
     data_response = response_APOC.text
     pictures_content = json.loads(data_response)
     return render_template("index.html", content = pictures_content) 
@@ -106,7 +106,7 @@ def searchField(field):
 #Next or previous route to address 
 @app.route('/apod/<string:page_num>', methods=['GET'])
 def paginate(page_num):
-    response_APOC = requests.get(f'http://127.0.0.1:4000/pictures/general?page_num={page_num}') 
+    response_APOC = requests.get(f'https://apod07nasa.herokuapp.com/pictures/general?page_num={page_num}') 
     data_response = response_APOC.text
     pictures_content = json.loads(data_response)
    
@@ -120,9 +120,9 @@ def look():
     date_supplied = args.get('fdate',type=str)
   
     if date_supplied == "":
-      response_APOC = requests.get(f'http://127.0.0.1:4000/pictures/general')  
+      response_APOC = requests.get(f'https://apod07nasa.herokuapp.com/pictures/general')  
     else:
-      response_APOC = requests.get(f'http://127.0.0.1:4000/pictures/general?date={date_supplied}') 
+      response_APOC = requests.get(f'https://apod07nasa.herokuapp.com/pictures/general?date={date_supplied}') 
 
     data_response = response_APOC.text
     pictures_content = json.loads(data_response)
