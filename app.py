@@ -29,7 +29,7 @@ def fillDataField(field):
 
     pictures.clear()
     today = date.today().isoformat()
-    sub_today = str(date.today() - timedelta(days=99)) #99
+    sub_today = str(date.today() - timedelta(days=100)) #99
     dateToday = date.today()
 
     #To improve performace, we cache data. In case it goes outdated an update is performed. This step could be debatable
