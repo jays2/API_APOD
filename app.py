@@ -48,9 +48,14 @@ def fillDataField(field):
         dict = {"date":each['date'],"url":each['url']}
         pictures.append(dict)
     elif field == "hdurl":
-      for each in pictures_nasa:
-        dict = {"date":each['date'],"hdurl":each['hdurl']}
-        pictures.append(dict)
+      for each in pictures_nasa: 
+        #Some cases don't have an hdurl
+        if "hdurl" in each:
+          dict = {"date":each['date'],"hdurl":each['hdurl']}
+          pictures.append(dict)
+        else:
+          dict = {"date":each['date'],"hdurl":"None"}
+          pictures.append(dict)
     elif field == "explanation":
       for each in pictures_nasa:
         dict = {"date":each['date'],"explanation":each['explanation']}
