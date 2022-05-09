@@ -8,7 +8,7 @@ import json
 
 app = Flask(__name__)
 
-from images import pictures
+from images import pictures, pictures_nasa
 
 #Index route
 @app.route('/', methods=['GET'])
@@ -20,13 +20,17 @@ def home():
     
 #Fills local data with NASA API
 def fillDataField(field):
+    global pictures_nasa
     global pictures
     pictures.clear()
     today = date.today().isoformat()
-    sub_today = str(date.today() - timedelta(days=99))
-    response_API = requests.get(f'https://api.nasa.gov/planetary/apod?api_key=5D28BHJaqlW7u9okOxk1bFAu6CAhOGPT3629bpBH&start_date={sub_today}&end_date={today}')
-    data = response_API.text
-    pictures_nasa = json.loads(data)
+    sub_today = str(date.today() - timedelta(days=99)) #99
+
+    #To improve performace, we cache data
+    if len(pictures_nasa) == 0:
+       response_API = requests.get(f'https://api.nasa.gov/planetary/apod?api_key=5D28BHJaqlW7u9okOxk1bFAu6CAhOGPT3629bpBH&start_date={sub_today}&end_date={today}')
+       data = response_API.text
+       pictures_nasa = json.loads(data)
 
     #If field is supplied, we assign by it
     dict = {}
@@ -60,6 +64,7 @@ def searchField(field):
     page_num = args.get('page_num',default=1, type=int)
     page_size = args.get('page_size',default=10, type=int)
     date_supplied = args.get('date',type=str)
+    
     fillDataField(field)
   
     start = (page_num - 1) * page_size

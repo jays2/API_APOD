@@ -53,20 +53,32 @@
         </div>
         {% endfor %}
        
-        {% if content[0]['info']['prev_page'] != 0 %} 
-          <a href="/apod/{{content[0]['info']['prev_page']}}">Previous  </a>
-        {% else %}
-        <a href="#"
-        onclick="return confirm('Nothing else to show');">Previous  </a>
-        {% endif %}
-
-        {% if content[0]['info']['next_page'] != 0 %}
-          <a href="/apod/{{content[0]['info']['next_page']}}">Next </a>
-        {% else %}
-          <a href="#"
-          onclick="return confirm('Nothing else to show');">Next</a>
-        {% endif %}
-
+    
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            {% if content[0]['info']['prev_page'] != 0 %} 
+              <li class="page-item"><a class="page-link" href="/apod/{{content[0]['info']['prev_page']}}">Previous</a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="#" >Previous</a></li>
+            {% endif %}
+            <li class="page-item"><a class="page-link" href="/apod/1">1</a></li>
+            <li class="page-item"><a class="page-link" href="/apod/2">2</a></li>
+            <li class="page-item"><a class="page-link" href="/apod/3">3</a></li>
+            <li class="page-item"><a class="page-link" href="/apod/4">4</a></li>
+            <li class="page-item"><a class="page-link" href="/apod/5">5</a></li>
+            <li class="page-item"><a class="page-link" href="/apod/6">6</a></li>
+            <li class="page-item"><a class="page-link" href="/apod/7">7</a></li>
+            <li class="page-item"><a class="page-link" href="/apod/8">8</a></li>
+            <li class="page-item"><a class="page-link" href="/apod/9">9</a></li>
+            <li class="page-item"><a class="page-link" href="/apod/10">10</a></li>
+            {% if content[0]['info']['next_page'] != 0 %}
+              <li class="page-item"><a class="page-link" href="/apod/{{content[0]['info']['next_page']}}">Next</a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     </body>
 </html>
