@@ -1,6 +1,6 @@
 from datetime import date
 from pprint import pprint
-from datetime import date, timedelta
+from datetime import date, timedelta,datetime
 from flask import Flask, jsonify, request, redirect, url_for, render_template
 
 import requests
@@ -8,7 +8,7 @@ import json
 
 app = Flask(__name__)
 
-from images import pictures, pictures_nasa
+from images import pictures, pictures_nasa,dateToday,dateSaved
 
 #Index route
 @app.route('/', methods=['GET'])
@@ -22,15 +22,22 @@ def home():
 def fillDataField(field):
     global pictures_nasa
     global pictures
+
+    global dateToday
+    global dateSaved
+
     pictures.clear()
     today = date.today().isoformat()
     sub_today = str(date.today() - timedelta(days=99)) #99
+    dateToday = date.today()
 
-    #To improve performace, we cache data
-    if len(pictures_nasa) == 0:
+    #To improve performace, we cache data. In case it goes outdated an update is performed. This step could be debatable
+    #To check more on Restful constraints please go to https://restfulapi.net/rest-architectural-constraints/#cacheable
+    if len(pictures_nasa) == 0 or dateSaved < dateToday or dateSaved == None:
        response_API = requests.get(f'https://api.nasa.gov/planetary/apod?api_key=5D28BHJaqlW7u9okOxk1bFAu6CAhOGPT3629bpBH&start_date={sub_today}&end_date={today}')
        data = response_API.text
        pictures_nasa = json.loads(data)
+       dateSaved = date.today()
 
     #If field is supplied, we assign by it
     dict = {}
