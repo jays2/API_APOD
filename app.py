@@ -1,3 +1,4 @@
+from audioop import reverse
 from datetime import date
 from pprint import pprint
 from datetime import date, timedelta,datetime
@@ -37,6 +38,7 @@ def fillDataField(field):
        response_API = requests.get(f'https://api.nasa.gov/planetary/apod?api_key=5D28BHJaqlW7u9okOxk1bFAu6CAhOGPT3629bpBH&start_date={sub_today}&end_date={today}')
        data = response_API.text
        pictures_nasa = json.loads(data)
+       pictures_nasa.reverse()
        dateSaved = date.today()
 
     #If field is supplied, we assign by it
