@@ -9,7 +9,7 @@ import json
 
 app = Flask(__name__)
 
-from images import pictures, pictures_nasa,dateToday,dateSaved
+from images import pictures, pictures_nasa, dateToday, dateSaved
 
 #Index route
 @app.route('/', methods=['GET'])
@@ -34,7 +34,7 @@ def fillDataField(field):
 
     #To improve performace, we cache data. In case it goes outdated an update is performed. This step could be debatable
     #To check more on Restful constraints please go to https://restfulapi.net/rest-architectural-constraints/#cacheable
-    if len(pictures_nasa) == 0 or dateSaved < dateToday or dateSaved == None:
+    if len(pictures_nasa) == 0 or dateSaved < dateToday:
        response_API = requests.get(f'https://api.nasa.gov/planetary/apod?api_key=5D28BHJaqlW7u9okOxk1bFAu6CAhOGPT3629bpBH&start_date={sub_today}&end_date={today}')
        data = response_API.text
        pictures_nasa = json.loads(data)
